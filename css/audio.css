@@ -1,47 +1,35 @@
-/* Absolute Center */
-.abs-center{
-	margin: auto;
-	position: fixed;
-	top:0; right:0; bottom:0; left:0;
-}
+
 /*Container for audio player*/
-#audioplayer{
-	width: 480px;
+.playerControls{
+	/* width: 480px; */
 	height: 60px;
 	margin: auto;
 	margin-top: 50px;
-	border: solid;
+    border: solid;
+    display: flex;
+    justify-content: space-between;
 }
 /* Play/Pause Button */
-#pButton{
+/* .playButton{
 	height:60px;
 	width: 60px;
-	border: none;
+    border: none;
+    background-color: red;
 	background-size: 50% 50%;
 	background-repeat: no-repeat;
 	background-position: center;
 	float:left;
-	outline:none;
+    outline:none;
 
-}
-/*Classes for play/pause button background*/
-.play{background: url('../img/play.png') ;}
-.pause{background: url('../img/pause.png') ;}
+} */
 
-#timeline{
-	width: 382px;
-	height: 20px;
+
+progress {
 	background: rgba(0,0,0,.3);
-	margin-top: 20px;
-	float: left;
-	border-radius: 15px;
+    flex-grow: 1;
 }
-/*Grabable Playhead*/
-#playhead{
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	border-radius: 50%;
-	margin-top: 1px;
-	background: black;
+
+div.playerControls > * {
+    align-self: center;
+    margin: 0 .25em;
 }

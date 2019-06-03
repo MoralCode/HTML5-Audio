@@ -9,23 +9,23 @@
 </head>
 
 <body>
-	<!--HTML5 audio-->
-	<audio id="music" preload="true">
-		<source src="music/interlude.mp3">
-		<source src="music/interlude.ogg">
-	</audio>
 
-	<div id="wrapper">
-		<!--Audio Player Interface-->
-		<div id="audioplayer">
-			<button id="pButton" class="play"></button>
-			<div id="timeline">
-				<div id="playhead"></div>
-			</div>
-		</div>
-	</div>
+	<div class="musicPlayerWrapper">
+        <audio class="musicPlayer" preload="true" ontimeupdate="syncPlayhead(event)">
+             <source src="music/interlude.mp3">
+            <source src="music/interlude.ogg">
+        </audio>
+        <!--Audio Player Interface-->
+        <div class="playerControls">
+            <button class="playButton">&#9654;</button>
+            <progress class="timeline"></progress>
+            <span class="clock">
+                <span class="elapsedTime">0:00</span>/<span class="totalTime">0:00</span>
+            </div>
+        </div>
+    </div>
 
-	<script src="js/html5audio.js" type="text/javascript"></script>
+    <script src="js/html5audio.js" type="text/javascript"></script>
 
 </body>
 

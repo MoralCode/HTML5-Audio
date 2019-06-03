@@ -1,105 +1,95 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+    var classes=document.getElementsByClassName("musicPlayer");
 
-var music = document.getElementById('music'); // id for audio element
-var duration; // Duration of audio clip
-var pButton = document.getElementById('pButton'); // play button
-var playhead = document.getElementById('playhead'); // playhead
-var timeline = document.getElementById('timeline'); // timeline
+    for(var i=0;i<classes.length;i++)
+        classes[i].addEventListener("loadedmetadata", syncPlayhead);
+    
 
-// timeline width adjusted for playhead
-var timelineWidth = timeline.offsetWidth - playhead.offsetWidth;
+        
+document.addEventListener("click", function(event) {
+    let classNames = event.target.getAttribute("class")
+    let player = getPlayer(event);
 
-// play button event listenter
-pButton.addEventListener("click", play);
+    if (classNames == null){}
+    else if (classNames.includes("playButton")){
+        togglePlayState(player);
+ 
+        event.target.innerHTML = (player.paused ? '\u25B6' : '\u25AE\u25AE');
+        
+    } else if (classNames.includes("timeline")){ 
 
-// timeupdate event listener
-music.addEventListener("timeupdate", timeUpdate, false);
+        player.currentTime =  clickPercent(event) * player.duration
 
-// makes timeline clickable
-timeline.addEventListener("click", function(event) {
-    moveplayhead(event);
-    music.currentTime = duration * clickPercent(event);
-}, false);
+    } else {
 
-// returns click as decimal (.77) of the total timelineWidth
-function clickPercent(event) {
-    return (event.clientX - getPosition(timeline)) / timelineWidth;
+    }
+});
 
+
+document.addEventListener("timeupdate", syncPlayhead(event), false);
+
+//Helper functions
+
+function getPlayer(event) {
+    return (event.target.getAttribute("class").includes("musicPlayer") ? event.target : findAncestorByClass(event.target, "musicPlayerWrapper").getElementsByClassName("musicPlayer")[0]);
 }
 
-// makes playhead draggable
-playhead.addEventListener('mousedown', mouseDown, false);
-window.addEventListener('mouseup', mouseUp, false);
-
-// Boolean value so that audio position is updated only when the playhead is released
-var onplayhead = false;
-
-// mouseDown EventListener
-function mouseDown() {
-    onplayhead = true;
-    window.addEventListener('mousemove', moveplayhead, true);
-    music.removeEventListener('timeupdate', timeUpdate, false);
+function getTimeline(event) {
+    return findAncestorByClass(event.target, "musicPlayerWrapper").getElementsByClassName("playerControls")[0].getElementsByClassName("timeline")[0];
 }
 
-// mouseUp EventListener
-// getting input from all mouse clicks
-function mouseUp(event) {
-    if (onplayhead == true) {
-        moveplayhead(event);
-        window.removeEventListener('mousemove', moveplayhead, true);
-        // change current time
-        music.currentTime = duration * clickPercent(event);
-        music.addEventListener('timeupdate', timeUpdate, false);
-    }
-    onplayhead = false;
+function getClock(event) {
+    return findAncestorByClass(event.target, "musicPlayerWrapper").getElementsByClassName("playerControls")[0].getElementsByClassName("clock")[0];
 }
-// mousemove EventListener
-// Moves playhead as user drags
-function moveplayhead(event) {
-    var newMargLeft = event.clientX - getPosition(timeline);
 
-    if (newMargLeft >= 0 && newMargLeft <= timelineWidth) {
-        playhead.style.marginLeft = newMargLeft + "px";
-    }
-    if (newMargLeft < 0) {
-        playhead.style.marginLeft = "0px";
-    }
-    if (newMargLeft > timelineWidth) {
-        playhead.style.marginLeft = timelineWidth + "px";
+function getElapsedTime(event) {
+    return getClock(event).getElementsByClassName("elapsedTime")[0];
+}
+
+function getTotalTime(event) {
+    return getClock(event).getElementsByClassName("totalTime")[0];
+}
+
+//https://stackoverflow.com/a/22119674
+function findAncestorByClass(el, cls) {
+    while ((el = el.parentElement) && !el.classList.contains(cls));
+    return el;
+}
+
+
+
+function togglePlayState(player) {
+    if (player.paused) {
+        player.play()
+    } else {
+        player.pause()
     }
 }
 
-// timeUpdate
 // Synchronizes playhead position with current point in audio
-function timeUpdate() {
-    var playPercent = timelineWidth * (music.currentTime / duration);
-    playhead.style.marginLeft = playPercent + "px";
-    if (music.currentTime == duration) {
-        pButton.className = "";
-        pButton.className = "play";
-    }
+function syncPlayhead(event) {
+
+    let player = getPlayer(event)
+    let timeline = getTimeline(event)
+
+    timeline.max = player.duration
+    timeline.value = player.currentTime
+    
+    setTimes(event, player)
 }
 
-//Play and Pause
-function play() {
-    // start music
-    if (music.paused) {
-        music.play();
-        // remove play, add pause
-        pButton.className = "";
-        pButton.className = "pause";
-    } else { // pause music
-        music.pause();
-        // remove pause, add play
-        pButton.className = "";
-        pButton.className = "play";
-    }
+function setTimes(event, player) {
+    getElapsedTime(event).innerHTML = makeReadableTime(player.currentTime)
+    getTotalTime(event).innerHTML = makeReadableTime(player.duration)
 }
 
-// Gets audio file duration
-music.addEventListener("canplaythrough", function() {
-    duration = music.duration;
-}, false);
+
+
+function makeReadableTime(seconds, locale = "en-US", format = {minute: '2-digit', second: '2-digit'}) {
+    //https://stackoverflow.com/a/25279340
+    var date = new Date(null);
+    date.setSeconds(seconds);
+    return date.toLocaleString(locale, format);
+}
 
 // getPosition
 // Returns elements left position relative to top-left of viewport
@@ -107,5 +97,10 @@ function getPosition(el) {
     return el.getBoundingClientRect().left;
 }
 
-/* DOMContentLoaded*/
-});
+// returns click as decimal (.77) of the total timelineWidth
+function clickPercent(event) {
+    let timeline = getTimeline(event)
+    return (event.clientX - getPosition(timeline)) / timeline.scrollWidth;
+
+}
+
