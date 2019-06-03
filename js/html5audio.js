@@ -41,14 +41,6 @@ function getClock(event) {
     return findAncestorByClass(event.target, "musicPlayerWrapper").getElementsByClassName("playerControls")[0].getElementsByClassName("clock")[0];
 }
 
-function getElapsedTime(event) {
-    return getClock(event).getElementsByClassName("elapsedTime")[0];
-}
-
-function getTotalTime(event) {
-    return getClock(event).getElementsByClassName("totalTime")[0];
-}
-
 //https://stackoverflow.com/a/22119674
 function findAncestorByClass(el, cls) {
     while ((el = el.parentElement) && !el.classList.contains(cls));
@@ -74,13 +66,9 @@ function syncPlayhead(event) {
     timeline.max = player.duration
     timeline.value = player.currentTime
     
-    setTimes(event, player)
+    getClock(event).innerHTML = makeReadableTime(player.currentTime) + "/" + makeReadableTime(player.duration)
 }
 
-function setTimes(event, player) {
-    getElapsedTime(event).innerHTML = makeReadableTime(player.currentTime)
-    getTotalTime(event).innerHTML = makeReadableTime(player.duration)
-}
 
 
 

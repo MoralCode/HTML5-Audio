@@ -9,19 +9,6 @@
     display: flex;
     justify-content: space-between;
 }
-/* Play/Pause Button */
-/* .playButton{
-	height:60px;
-	width: 60px;
-    border: none;
-    background-color: red;
-	background-size: 50% 50%;
-	background-repeat: no-repeat;
-	background-position: center;
-	float:left;
-    outline:none;
-
-} */
 
 
 progress {
