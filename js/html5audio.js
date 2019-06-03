@@ -29,16 +29,20 @@ document.addEventListener("timeupdate", syncPlayhead(event), false);
 
 //Helper functions
 
+function getWrapper(event) {
+    return findAncestorByClass(event.target, "musicPlayerWrapper");
+}
+
 function getPlayer(event) {
-    return (event.target.getAttribute("class").includes("musicPlayer") ? event.target : findAncestorByClass(event.target, "musicPlayerWrapper").getElementsByClassName("musicPlayer")[0]);
+    return (event.target.getAttribute("class").includes("musicPlayer") ? event.target : getWrapper(event).getElementsByClassName("musicPlayer")[0]);
 }
 
 function getTimeline(event) {
-    return findAncestorByClass(event.target, "musicPlayerWrapper").getElementsByClassName("playerControls")[0].getElementsByClassName("timeline")[0];
+    return getWrapper(event).getElementsByClassName("playerControls")[0].getElementsByClassName("timeline")[0];
 }
 
 function getClock(event) {
-    return findAncestorByClass(event.target, "musicPlayerWrapper").getElementsByClassName("playerControls")[0].getElementsByClassName("clock")[0];
+    return getWrapper(event).getElementsByClassName("playerControls")[0].getElementsByClassName("clock")[0];
 }
 
 //https://stackoverflow.com/a/22119674
